@@ -1,0 +1,64 @@
+﻿
+
+<div ng-controller="myCntrl">
+
+    <div>
+        <input type="text" class="form-control" ng-model="Id" ng-keyup="$event.keyCode==13 && get()" />
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" ng-model="emp.EmpName" />
+        <label class="form-label">overtime</label>
+        <input type="checkbox" class="form-check-input" ng-model="emp.isAllowOverTime" />
+        <br />
+        <label class="form-label">Education</label>
+        <select class="form-select" ng-model="emp.Education">
+            <option value="ssc">ssc</option>
+            <option value="hsc">hsc</option>
+        </select>
+        <br />
+        <label class="form-label">birthdate</label>
+        <input type="date" class="form-date" ng-model="emp.BirthDate" />
+        <br />
+        <label class="form-label">Gender</label>
+        <input type="radio" name="Gender" ng-model="emp.Gender" value="male" /> male
+        <input type="radio" name="Gender" ng-model="emp.Gender" value="female" />female
+        <br />
+        <button class="form-button" ng-click="save()"> save</button>
+    </div>
+
+</div>
+<script>
+    (function () {
+        let app = angular.module('app', []);
+        app.controller('myCntrl', ['$scope', '$http', myCntrl]);
+ 
+    }());
+    function myCntrl(s, $http)
+    {
+        s.emp = {};
+        s.save = function () {
+            $http({
+                method: 'POST',
+                url: '/Home/Save',
+                data: JSON.stringify(s.emp )
+            }).then(function (res) {
+
+            }, function (err) {
+
+            })
+        }
+
+        s.get = function () {
+            debugger;
+            $http.get('/Home/Get?Id=' + s.Id).
+                then(function (res) {
+                    debugger;
+                    s.emp = JSON.parse(res.data);
+                    let dddd = s.emp.BirthDate.match(/\d/g);
+                    s.emp.BirthDate=  new Date(parseInt( s.emp.BirthDate.match(/\d/g).join('')))
+            }, function (err) {
+
+            })
+
+        }
+    }
+</script>
